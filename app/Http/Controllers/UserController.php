@@ -16,7 +16,13 @@ class UserController extends Controller
 
     public function show($id)
     {
-        return dd("users.index", $id);
+        $user = User::find($id);
+
+        if(!$user) {
+            return redirect()->route('users.index');
+        }
+
+        return view("users.show", compact('user'));
     }
 
 }
