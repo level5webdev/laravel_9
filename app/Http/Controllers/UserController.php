@@ -8,15 +8,15 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
+    protected  $model;
+    public function __construct(User $user)
+    {
+        $this->model = $user;
+    }
     public function index(Request $request)
     {
-        $search = $request->search;
-        $users = User::where(function ($query) use ($search) {
-            if ($search) {
-                $query->where('email', "%{$search}%");
-                $query->orWhere('name', 'LIKE', "%{$search}%");
-            }
-        })->get();
+        $users = $this->model->getUsers(search: $request->get('search', ''));
+
 
 
         return view("users.index", compact('users'));
@@ -43,7 +43,11 @@ class UserController extends Controller
         $data = $request->all();
         $data['password'] = bcrypt($request->password);
 
-        $user = User::create($data);
+        if($request->image) {
+            $data['image'] = $request->image->store('users');
+        }
+        
+        $this->model->create($data);
 
         return redirect()->route('users.index');
         // return redirect()->route('users.show', $user->id); 
