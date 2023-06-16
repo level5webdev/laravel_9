@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreUpdateUserFormRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -43,10 +44,14 @@ class UserController extends Controller
         $data = $request->all();
         $data['password'] = bcrypt($request->password);
 
-        if($request->image) {
+
+
+        if ($request->image) {
             $data['image'] = $request->image->store('users');
+            // $extension = $request->image->getClientOriginalExtension();
+            // $data['image'] = $request->image->storeAs('users', now() . ".{$extension}");
         }
-        
+
         $this->model->create($data);
 
         return redirect()->route('users.index');
@@ -66,17 +71,33 @@ class UserController extends Controller
 
     public function update(StoreUpdateUserFormRequest $request, $id)
     {
-        $user = User::find($id);
+        $user = $this->model->find($id);
 
         if (!$user) {
             return redirect()->route('users.index');
         }
 
         $data = $request->only('name', 'email');
+
         if ($request->password) {
 
             $data['password'] = bcrypt($request->password);
         }
+
+       
+        if ($request->image) {
+
+            if ($user->image == !null  ) {
+
+                Storage::delete($user->image);
+
+            }
+
+            $data['image'] = $request->image->store('users');
+            // $extension = $request->image->getClientOriginalExtension();
+            // $data['image'] = $request->image->storeAs('users', now() . ".{$extension}");
+        }
+
 
         $user->update($data);
 

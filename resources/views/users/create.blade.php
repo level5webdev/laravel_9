@@ -1,22 +1,14 @@
 @extends('layouts.app')
-@section('title', 'Novo usuário')
+
+@section('title', 'Novo Usuário')
+
 @section('content')
-    <h1>Novo usuário'</h1>
+<h1 class="text-2xl font-semibold leading-tigh py-2">Novo Usuário</h1>
 
-    @if ($errors->any())
-        <ul class="erros">
-            @foreach ($errors->all() as $erro)
-                <li class="erro">{{ $erro }}</li>
-            @endforeach
-        </ul>
-    @endif
-    <form action="{{ route('users.store') }}" method="post">
-        @csrf
-        <input type="text" name="name" id="name" placeholder="diginto seu nome" value="{{old('name')}}">
+@include('includes.validations-form')
 
-        <input type="email" name="email" id="email" placeholder="digite seu email" value="{{old('email')}}">
+<form action="{{ route('users.store') }}" method="post" enctype="multipart/form-data">
+    @include('users._partials.form')
+</form>
 
-        <input type="password" name="password" id=" password" placeholder="digite sua senha">
-        <button type="submit">Enviar</button>
-    </form>
 @endsection

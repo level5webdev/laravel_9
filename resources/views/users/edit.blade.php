@@ -1,25 +1,15 @@
 @extends('layouts.app')
-@section('title', 'Editar novo usúario {{ $user->name}}')
+
+@section('title', "Editar o Usuário {$user->name}")
+
 @section('content')
-    <h1>Editat usuário {{ $user->name}}'</h1>
+<h1 class="text-2xl font-semibold leading-tigh py-2">Editar o Usuário {{ $user->name }}</h1>
 
-    @if ($errors->any())
-        <ul class="erros">
-            @foreach ($errors->all() as $erro)
-                <li class="erro">{{ $erro }}</li>
-            @endforeach
-        </ul>
-    @endif
-    <form action="{{route('users.update', $user->id)}}" method="post">
+@include('includes.validations-form')
 
-        @csrf
-        {{-- @method('PUT') --}}
-        <input type="hidden" name="_method" value="PUT">
-        <input type="text" name="name" id="name" placeholder="diginto seu nome" value="{{$user->name}}">
+<form action="{{ route('users.update', $user->id) }}" method="post" enctype="multipart/form-data">
+    @method('PUT')
+    @include('users._partials.form')
+</form>
 
-        <input type="email" name="email" id="email" placeholder="digite seu email" value="{{$user->email}}">
-
-        <input type="password" name="password" id=" password" placeholder="digite sua senha">
-        <button type="submit">Enviar</button>
-    </form>
 @endsection
